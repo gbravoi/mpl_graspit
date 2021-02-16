@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<root>
+	<material>plastic</material>
+	<mass>2.74415</mass>
+	<cog>12.34 1.45 -1.78</cog>
+	<inertia_matrix>0.000173184 0 0 0  0.000366499 2.77966e-06 0  2.77966e-06 0.000359291</inertia_matrix>
+	<geometryFile>mpl_right_arm__thumb3.iv</geometryFile>
+</root>

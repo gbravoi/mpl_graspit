@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<root>
+	<material>plastic</material>
+	<mass>2.50622</mass>
+	<cog>-8.3455 -1.48464 0.36</cog>
+	<inertia_matrix>0.000178939 -3.88097e-06 3.24897e-07 -3.88097e-06  7.59883e-05 1.17825e-05 3.24897e-07  1.17825e-05 0.000174551</inertia_matrix>
+	<geometryFile>mpl_right_arm__pinky2.iv</geometryFile>
+</root>

@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<!-- d0: mpl_right_arm__index0, min=-0.345, max=0 -->
+<!-- d1: mpl_right_arm__index1, min=-0.785, max=1.57 -->
+<!-- d2: mpl_right_arm__index2, min=0, max=1.72 -->
+<!-- d3: mpl_right_arm__index3, min=0, max=1.38 -->
+<!-- d4: mpl_right_arm__middle0, min=0, max=0 -->
+<!-- d5: mpl_right_arm__middle1, min=-0.785, max=1.57 -->
+<!-- d6: mpl_right_arm__middle2, min=0, max=1.73 -->
+<!-- d7: mpl_right_arm__middle3, min=0, max=1.38 -->
+<!-- d8: mpl_right_arm__pinky0, min=0, max=0.345 -->
+<!-- d9: mpl_right_arm__pinky1, min=-0.785, max=1.57 -->
+<!-- d10: mpl_right_arm__pinky2, min=0, max=1.72 -->
+<!-- d11: mpl_right_arm__pinky3, min=0, max=1.38 -->
+<!-- d12: mpl_right_arm__ring0, min=0, max=0.345 -->
+<!-- d13: mpl_right_arm__ring1, min=-0.785, max=1.57 -->
+<!-- d14: mpl_right_arm__ring2, min=0, max=1.72 -->
+<!-- d15: mpl_right_arm__ring3, min=0, max=1.38 -->
+<!-- d16: mpl_right_arm__thumb0, min=0, max=2.07 -->
+<!-- d17: mpl_right_arm__thumb1, min=0, max=1.03 -->
+<!-- d18: mpl_right_arm__thumb2, min=0, max=1.03 -->
+<!-- d19: mpl_right_arm__thumb3, min=-0.819, max=1.28 -->
+<EigenGrasps dimensions="20">
+	<EG>
+		<EigenValue value="0.5"/> <!--EigenValue is not used in the code at this stage -->
+		<!--Limits min="0" max="0"/-->
+		<DimVals d0="-0.1725" d1="0.3925" d2="0.86" d3="0.69" d4="0" d5="0.3925" d6="0.865" d7="0.69" d8="0.1725" d9="0.3925" d10="0.86" d11="0.69" d12="0.1725" d13="0.3925" d14="0.86" d15="0.69" d16="1.035" d17="0.515" d18="0.515" d19="0.2305"/>
+	</EG>
+	<ORIGIN>
+		<EigenValue value="0.5"/> 
+		<DimVals d0="-0.1725" d1="0.3925" d2="0.86" d3="0.69" d4="0" d5="0.3925" d6="0.865" d7="0.69" d8="0.1725" d9="0.3925" d10="0.86" d11="0.69" d12="0.1725" d13="0.3925" d14="0.86" d15="0.69" d16="1.035" d17="0.515" d18="0.515" d19="0.2305"/>
+	</ORIGIN>
+</EigenGrasps>
