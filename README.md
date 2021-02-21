@@ -1,6 +1,6 @@
 # MPL Graspit
-It is an integration of the MPL (Modular Prosthetic Limb from Johns Hopkins) with Graspit, ROS and moveit.
-The final goal is to have a service that report the Greas message needed in moveit to perform grasping of an object.
+This an integration of the MPL (Modular Prosthetic Limb from Johns Hopkins) with Graspit.
+This repo also include an example to use Graspit + ROS to get the grasping pose.
 
 
 ## Installation
@@ -33,8 +33,7 @@ catkin_make
 ```
 
 ## Launch graspit interface
-The code that integrates Graspit-ROS-Moveit do not need this. 
-But you can use this, if you want to work directly with the graspit interface
+If you want to work directly with the graspit interface
 
 **1. First set the folder where you will save your graspit models**
 **-Option 1: use folder created by graspit**
@@ -58,7 +57,7 @@ ln -s <path-to mpl_graspit>/resources/worlds/mpl_right_arm_world.xml
 
 To know more about objects files check [Graspit manual](https://graspit-simulator.github.io/build/html/data_files_bodies.html)
 
-**-Option 2: use fordelr inside the package**
+**-Option 2: use resoruces folder inside this package**
 Add it to your bashrc  file:
 ```
 echo "export GRASPIT=<path-to mpl_graspit>/resources" >> ~/.bashrc    
@@ -71,20 +70,10 @@ On a terminal execute:
 graspit_simulator
 ```
 
-**4. Search for the desired grasp using grapical interface**
-1.  Load yor robot and object
-    -Option 1: Load robot (File>import Robot) and object (File> Import object). Note: recomen to move the robot a little, to avoid object importing in collision with the object.
-    -Option 2: Load a world file with the object and robot included (File> Open)
-2.A. (Option 1) Use EigenGrasp planner (Grasp> EigenGrasp Planner) 
-    - Select desired settings, then init and ">" [Check manual for more details](https://graspit-simulator.github.io/build/html/grasp_planning_eg.html)
-2.B (Option 2) Move manualle hand to desired grasp
-3. You can evaluate the grasp using Grasp>Quality Measure. Select quality, Add, Ok. For example epsilon =-1 is invalid grasp. The bigger the number the better (note epsilon<1).
-4. Save the file (.world) In there you can find informaton like the joint posiiton and the orientation and posiitons of the hand and object (To use this information you will need to trasnform accordinly to the origin of Gazebo/Rviz)
-
 
 
 ## Choosing contact points for the planner:
-When planning a gasrp with EigenGrasp, you need to select which contact file you want to use. 
+When planning a grasp with EigenGrasp, you need to select which contact file you want to use. 
 The contact files indicate points that the planer will place in contact with the object.
 
 Currently you have the following files (on folder *robots/mpl_right_arm/virtual/*):
@@ -101,18 +90,27 @@ To change the contacts file used by defauld change *model/robots/mpl_right_arm/m
 You can create your set of contacts using the *Virtual Grasp* tool of graspit.
 1. On Graspit load *worlds/mpl_sphere.xml*
 2. go to Grasp>Virtual Contacts.
-3. Move the sphere to the point of contact, select "Mark Contact" (marked contacts should increate by one)
+3. Move the sphere to the point of contact, select "Mark Contact" (marked contacts should increase by one)
 4. Once all contacts are done click on save
 
 ![Alt text](readme_img/create_contacts.png?raw=true "Create Hand contacts")
 
 
+## Search for the desired grasp using grapical interface**
+1.  Load yor robot and object
+    -Option 1: Load robot (File>import Robot) and object (File> Import object). Note: I recomend to move the robot a little after importing it. Otherwise the object will import in the same spot, creating collisions with the hand.
+    -Option 2: Load a world file with the object and robot included (File> Open)
+2.A. (Option 1) Use EigenGrasp planner (Grasp> EigenGrasp Planner) 
+    - Select desired settings, then init and ">" [Check manual for more details](https://graspit-simulator.github.io/build/html/grasp_planning_eg.html)
+2.B (Option 2) Move manually hand to desired grasp
+3. You can evaluate the grasp using Grasp>Quality Measure. Select quality, Add, Ok. For example epsilon =-1 is invalid grasp. The bigger the number the better (note epsilon<1).
+4. Save the file (.world) In there you can find informaton like the joint position of the hand during grasping, the absolute position and orientation of the hand and the objects in  Graspit coordinates. You can use the joint position for grasp the object. To use the positions of the hand and the object you will need to transform to the origin of Gazebo/Rviz
 
-
-## Getting grasping from Graspit using service written by Jennifer Buehler
+## Search for the desired grasp using service written by Jennifer Buehler
+This code implement a service that uses Graspit without the grapical interface. You will need to load the robot and object model, call the EigenGrasp planner, and the you will receive a list of possible grasps (*moveit_msgs/GraspPlanning*) and get the world files of the hand grasping the object.
 
 The wiki of this code can be found [here](https://github.com/JenniferBuehler/graspit-pkgs/wiki/grasp_planning_graspit_ros)
-This is a sumary of the steps shown in the example, with the only change of change the robot by the mpl_arm
+Up next, a sumary of the steps to install and use the service with the mpl_arm.
 
 **1. Install** [Jennifer Buehler graspit-pkg](https://github.com/JenniferBuehler/graspit-pkgs/wiki/Installation). 
 First you need to have the following packages:
