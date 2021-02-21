@@ -100,10 +100,14 @@ You can create your set of contacts using the *Virtual Grasp* tool of graspit.
 1.  Load yor robot and object
     -Option 1: Load robot (File>import Robot) and object (File> Import object). Note: I recomend to move the robot a little after importing it. Otherwise the object will import in the same spot, creating collisions with the hand.
     -Option 2: Load a world file with the object and robot included (File> Open)
-2.A. (Option 1) Use EigenGrasp planner (Grasp> EigenGrasp Planner) 
+    
+2.A. (Option 1) Use EigenGrasp planner (Grasp> EigenGrasp Planner)
     - Select desired settings, then init and ">" [Check manual for more details](https://graspit-simulator.github.io/build/html/grasp_planning_eg.html)
+
 2.B (Option 2) Move manually hand to desired grasp
+
 3. You can evaluate the grasp using Grasp>Quality Measure. Select quality, Add, Ok. For example epsilon =-1 is invalid grasp. The bigger the number the better (note epsilon<1).
+
 4. Save the file (.world) In there you can find informaton like the joint position of the hand during grasping, the absolute position and orientation of the hand and the objects in  Graspit coordinates. You can use the joint position for grasp the object. To use the positions of the hand and the object you will need to transform to the origin of Gazebo/Rviz
 
 ## Search for the desired grasp using service written by Jennifer Buehler
