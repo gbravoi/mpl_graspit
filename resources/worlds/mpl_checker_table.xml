@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/objects/checker.xml</filename>
+		<transform>
+			<fullTransform>(+0.690353 +0.703809 +0.103107 +0.13204)[+195.44 +142.373 +833.055]</fullTransform>
+		</transform>
+	</graspableBody>
+	<obstacle>
+		<filename>models/obstacles/dinner_table.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</obstacle>
+	<robot>
+		<filename>models/robots/mpl_right_arm/mpl_right_arm.xml</filename>
+		<dofValues>-0.161119 +0.455084 +0.895253 +0.460317 +0 +0.399932 +0.725516 +0.864637 +0.164297 +0.373834 +0.819101 +0.657186 +0.164297 +0.373834 +0.819101 +0.657186 +1.58621 +0.627964 +0.0491901 +0.859115 </dofValues>
+		<transform>
+			<fullTransform>(+0.371604 +0.673188 +0.334884 -0.544593)[+247.604 -227.764 +12.4442]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+530.679 -279.127 +1136.19</position>
+		<orientation>-0.532214 -0.175803 +0.0179786 -0.82796</orientation>
+		<focalDistance>+857.616</focalDistance>
+	</camera>
+</world>

@@ -11,4 +11,8 @@ Separator { # Body
 	  }
 
 	  Cylinder { radius 22 height 180 }
+	RotationXYZ {
+            axis    Z
+            angle   1.5708
+        }
 }

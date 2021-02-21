@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/objects/checker.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</graspableBody>
+	<robot>
+		<filename>models/robots/mpl_right_arm/mpl_right_arm.xml</filename>
+		<dofValues>-0.344999 +1.15103 +0.325407 +0.0598548 +0 +1.20306 +0.152543 +0.352668 +0.164297 +0.373834 +0.819101 +0.657186 +0.164297 +0.373834 +0.819101 +0.657186 +1.6115 +0.627964 +0.294264 +0.0567046 </dofValues>
+		<transform>
+			<fullTransform>(+0.371604 +0.673188 +0.334884 -0.544593)[+34.9711 -120.252 +21.4748]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+70.5058 -106.652 -195.16</position>
+		<orientation>+0.960173 -0.147672 +0.221638 +0.0844807</orientation>
+		<focalDistance>+233.728</focalDistance>
+	</camera>
+</world>

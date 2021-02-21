@@ -8,14 +8,14 @@
 	</graspableBody>
 	<robot>
 		<filename>models/robots/mpl_right_arm/mpl_right_arm.xml</filename>
-		<dofValues>-0.164297 +0.329026 +0.872254 +0.85549 +0 +0.25092 +1.17293 +0.657186 +0.164297 +0.373834 +0.819101 +0.657186 +0.164297 +0.373834 +0.819101 +0.657186 +1.8133 +0.660666 +0.643633 +0.0351202 </dofValues>
+		<dofValues>-0.161119 +0.687752 +0.895253 +0.460317 +0 +0.768646 +0.725516 +0.864637 +0.164297 +0.373834 +0.819101 +0.657186 +0.164297 +0.373834 +0.819101 +0.657186 +1.58621 +0.627964 +0.281756 +0.859115 </dofValues>
 		<transform>
-			<fullTransform>(+0.371604 +0.673188 +0.334884 -0.544593)[+57.01 -108.209 +26.1368]</fullTransform>
+			<fullTransform>(+0.371604 +0.673188 +0.334884 -0.544593)[+44.5791 -115.759 +23.4717]</fullTransform>
 		</transform>
 	</robot>
 	<camera>
-		<position>+163.277 +58.288 -392.752</position>
-		<orientation>+0.984585 +0.00113076 +0.14311 -0.100548</orientation>
-		<focalDistance>+435.242</focalDistance>
+		<position>+112.05 -95.7871 -346.095</position>
+		<orientation>-0.979473 +0.0749438 -0.182316 -0.0421557</orientation>
+		<focalDistance>+385.351</focalDistance>
 	</camera>
 </world>

@@ -1,0 +1,33 @@
+<launch>
+ <!-- This Launch file was designed to use the service developed by  Jennifer Buehler 
+ Refer Readme for more information-->
+
+<!--add robot-->
+<arg name="robot_name" default="mpl_right_arm"/>
+<arg name="robot_file" default="$(find mpl_graspit)/resources/models/robots/mpl_right_arm/mpl_right_arm.xml" />
+<arg name="finger_names" default="
+mpl_right_arm__index0
+mpl_right_arm__index1
+mpl_right_arm__index2
+mpl_right_arm__index3
+mpl_right_arm__middle0
+mpl_right_arm__middle1
+mpl_right_arm__middle2
+mpl_right_arm__middle3
+mpl_right_arm__pinky0
+mpl_right_arm__pinky1
+mpl_right_arm__pinky2
+mpl_right_arm__pinky3
+mpl_right_arm__ring0
+mpl_right_arm__ring1
+mpl_right_arm__ring2
+mpl_right_arm__ring3
+mpl_right_arm__thumb0
+mpl_right_arm__thumb1
+mpl_right_arm__thumb2
+mpl_right_arm__thumb3
+"/>
+
+<node name="add_model_client_robot" pkg="grasp_planning_graspit_ros" type="add_model_client" respawn="false" output="screen" args="$(arg robot_name) $(arg robot_file) true $(arg finger_names)"/>
+
+</launch>
