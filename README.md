@@ -97,7 +97,7 @@ The contact files indicate points that the planer will place in contact with the
 
 Currently you have the following files (on folder *robots/mpl_right_arm/virtual/*):
 -contacts_all.xml: include a contact in each finger phalanx and 3 on the palm
--Contacts_pinch: only on the finger tips of the thumb and index
+-Contacts_pinch: only on the finger tips of the thumb and index (note: rigid fingers can't perform force closure with 2 fingers)
 -Contacts_tripod: only on the finger tips of the thumb, index and middle
 
 To change the contacts file used by defauld change *model/robots/mpl_right_arm/mpl_right_arm.xlm* changing the following like
