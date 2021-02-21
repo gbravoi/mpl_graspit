@@ -392,5 +392,6 @@
 		<link dynamicJointType='Revolute'>mpl_right_arm__thumb3.xml</link>
 	</chain>
 	<eigenGrasps>eigen/eigen.xml</eigenGrasps>
-	<virtualContacts>virtual/contacts.xml</virtualContacts>
+	<!-- <virtualContacts>virtual/contacts_all.xml</virtualContacts> -->
+	<virtualContacts>virtual/contacts_pinch.xml</virtualContacts>
 </robot>

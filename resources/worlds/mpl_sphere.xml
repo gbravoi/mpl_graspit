@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/objects/sphere.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+134.549 -75.523 -3.96186]</fullTransform>
+		</transform>
+	</graspableBody>
+	<robot>
+		<filename>models/robots/mpl_right_arm/mpl_right_arm.xml</filename>
+		<dofValues>-0.344999 -0.0163167 +0 +0 +0 +0.0276561 +0 +0 +0 -0.0335937 +0 +0 +0 -0.0921676 +0 +0 +0 +0 +0 -0.818999 </dofValues>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+137.839 -51.4125 -164.085</position>
+		<orientation>-0.893965 +0.38246 -0.170631 +0.159489</orientation>
+		<focalDistance>+206.321</focalDistance>
+	</camera>
+</world>
