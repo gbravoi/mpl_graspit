@@ -10,9 +10,5 @@ Separator { # Body
 		diffuseColor	0.4 0.4 0.8
 	  }
 
-	  Cylinder { radius 22 height 180 }
-	RotationXYZ {
-            axis    Z
-            angle   1.5708
-        }
+	Cylinder { radius 22 height 180 }
 }

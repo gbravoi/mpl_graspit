@@ -4,6 +4,12 @@
 #cog 0 0 0
 
 Separator { # Body
+    Transform {
+      translation 0 0 12.5
+      rotation 1 0 0  1.5708
+      scaleFactor 1 1 1
+
+    }
 
 	Material {
 		ambientColor	0.4 0.4 0.8

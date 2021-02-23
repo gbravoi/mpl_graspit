@@ -56,6 +56,7 @@ ln -s <path-to mpl_graspit>/resources/worlds/mpl_right_arm_world.xml
 ```
 
 To know more about objects files check [Graspit manual](https://graspit-simulator.github.io/build/html/data_files_bodies.html)
+[Inventor basic shapes](http://web.mit.edu/ivlib/www/iv/shapes.html)
 
 **-Option 2: use resoruces folder inside this package**
 Add it to your bashrc  file:

@@ -3,16 +3,81 @@
 
 """
 function that extract information from world file (grasp processed offline):
--joints position (and names?)
--hand position
--object posiiton
+-joints position (and names)
+-enf effector position in graspit
+-object position in graspit
+
+aditional functions
+-Handle transformations (orientation and position) between diferent frames
+-compute pose of the end effetcor in world frame if object pose in world frame is known.
 """
 import os
 import rospkg 
 from xml.dom import minidom
 
-import tf2_ros
-import rospy
+
+from scipy.spatial.transform import Rotation as R
+import numpy as np
+from geometry_msgs.msg import Pose
+
+
+
+def get_transformation_matrix(q,t):
+    """
+    return a transformation matrix. Transform vector from frame B to frame A
+    q: quaternion  (qw,qx,qy,qz) Describing orientation of B seen from A (Or rotation matrix that transform vector from B to A)
+    t: translation (x,y,z) in frame A. position of frame B
+    """
+    r=(R.from_quat([q[1],q[2],q[3],q[0]])).as_dcm()#rotation matriz from quaternion. note quaternion in scipy is (x,w,z,w)
+    t=np.expand_dims(t,axis=1)
+    bottom_row=np.zeros((1,4))
+    bottom_row[0][3]=1
+    T=np.hstack((r,t))
+    T=np.vstack((T,bottom_row))
+    return T
+
+def get_transformation_matrix_from_pose(pose):
+    """
+    transformaiton matrix, where the input is a pose
+    """
+    q=np.array([pose.orientation.w,pose.orientation.x,pose.orientation.y,pose.orientation.z])
+    t=np.array([pose.position.x,pose.position.y,pose.position.z])
+    return get_transformation_matrix(q,t)
+
+def transformation_inverse(T):
+    """
+    Computes the inverse of a transformation matrix
+    """
+    r=T[0:3,0:3]
+    t=T[0:3,3]
+    r_inv=np.transpose(r)
+    t_inv=-1*np.matmul(r_inv,t)
+    t_inv=np.expand_dims(t_inv,axis=1)
+    bottom_row=np.zeros((1,4))
+    bottom_row[0][3]=1
+    T_inv=np.hstack((r_inv,t_inv))
+    T_inv=np.vstack((T_inv,bottom_row))
+    return T_inv
+
+def from_transformation_to_pose(T):
+    """
+    Extract the pose from a transformation matrix
+    """
+    r=R.from_dcm(T[0:3,0:3]) #scipy rotation
+    q=r.as_quat()#note quaternion in scipy is (x,y,z,w)
+    t=T[0:3,3]
+    pose=Pose()
+    pose.orientation.x=q[0]
+    pose.orientation.y=q[1]
+    pose.orientation.z=q[2]
+    pose.orientation.w=q[3]
+    pose.position.x=t[0]
+    pose.position.y=t[1]
+    pose.position.z=t[2]
+    return pose
+
+
+
 
 
 def read_world_file(filename,package_name, package_folder=None):
@@ -37,14 +102,17 @@ def read_world_file(filename,package_name, package_folder=None):
 
     def get_transformation(xml_file,parent):
         """
-        return orientation as quaternion and position
+        return transformation matrix
         """
+        scale_factor=0.001#note graspit works in mm. gazebo in meters.
         parent=xml_file.getElementsByTagName(parent)[0]
         fullTransform=parent.getElementsByTagName("fullTransform")[0].childNodes[0].nodeValue #string
-        orientation=map(float,fullTransform.split("(")[1].split(")")[0].split())#quaternion
-        translation=map(float,fullTransform.split("[")[1].split("]")[0].split())
-        return orientation , translation
-
+        q=map(float,fullTransform.split("(")[1].split(")")[0].split())#quaternion  (qw,qx,qy,qz)
+        t=np.asarray(map(float,fullTransform.split("[")[1].split("]")[0].split()) )#translation. 
+        t=t*scale_factor #scale from mm to meters
+        #transformation matrix
+        T=get_transformation_matrix(q,t)
+        return T
 
     def get_joints_names(robot_path):
         """
@@ -91,43 +159,87 @@ def read_world_file(filename,package_name, package_folder=None):
     robot_filename=get_filename(world_xml,'robot')
     robot_path=get_absolute_path(package_name,package_folder,robot_filename)
     robot_joints= get_joints_position(world_xml, robot_path)
-    robot_orientation , robot_translation= get_transformation(world_xml,'robot')
+    T_robot_graspit= get_transformation(world_xml,'robot')
 
     #object information
     object_filename=get_filename(world_xml,'graspableBody')
-    obj_orientation , obj_translation= get_transformation(world_xml,'graspableBody')
+    T_object_graspit= get_transformation(world_xml,'graspableBody')
 
-    return robot_joints, robot_orientation , robot_translation,  obj_orientation , obj_translation
+    return robot_joints, T_robot_graspit ,T_object_graspit
 
 
+def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditional_rotation=None, aditional_translation=None):
+    """
+    Compute pose of the robot
+    It uses the transformation matrix of robot_graspit, object_graspit and the pose of the object in the world
+    aditional rotation and translation can be include in case of unconsidered transformations (not needed of them if frame if the same when object in graspit and gazebo when no rotation and translation is the same)
+    """
+    #use pose to get transformation from object to world
+    T_object_world=get_transformation_matrix_from_pose(object_pose_in_world)
+    
+    aditional_transformation=None
+    #option to add extra transformaiton in case someting is off
+    if aditional_rotation is not None or aditional_translation is not None:
+        #if only one specified, make other 0
+        if  aditional_rotation is None:
+            aditional_rotation=np.array([1,0,0,0])
+        elif aditional_translation is None:
+            aditional_translation=np.zeros((3))
+        aditional_transformation=get_transformation_matrix(aditional_rotation,aditional_translation)
 
-# def get_transformation(tf2_buffer, target_frame, source_frame):
-#     return tf2_buffer.lookup_transform(target_frame, source_frame, rospy.Time(), rospy.Duration(10))
+    #compute inverse tranformation object_graspit
+    T_graspit_object=transformation_inverse(T_object_graspit)
+    
+    #compute transformation robot_world
+    T_robot_world=None
+    if aditional_transformation is None:
+        T_robot_world=np.matmul(T_object_world,np.matmul(T_graspit_object,T_robot_graspit))
+    else:
+        T_robot_world=np.matmul(T_object_world,np.matmul(aditional_transformation,np.matmul(T_graspit_object,T_robot_graspit)))
+
+    #now get robot pose from the transformation matrix
+    robot_pose=from_transformation_to_pose(T_robot_world)
+
+    return robot_pose
+
+
 
 
 #main for testing
-if __name__ == "__main__":
-    filename='worlds/mpl_checker_v2.xml'
-    package_folder='resources'
-    package_name='mpl_graspit'
-
-    robot_joints, robot_orientation , robot_translation,  obj_orientation , obj_translation= read_world_file(filename,package_name, package_folder)
-    print(robot_joints)
-    print(robot_orientation)
-    print(robot_translation)
-    print(obj_orientation)
-    print(obj_translation)
+# if __name__ == "__main__":
+#     filename='worlds/mpl_checker_v3.xml'
+#     package_folder='resources'
+#     package_name='mpl_graspit'
 
 
+#     #read world file
+#     robot_joints, T_robot_graspit ,T_object_graspit= read_world_file(filename,package_name, package_folder)
+#     # print(robot_joints)
+#     print(T_robot_graspit)
+#     print(T_object_graspit)
 
-    # """
-    # get robot hand position and orientation (in gazebo world frame) based on real object position, and the position/orientations given in Graspit.
-    # """
-    # #nodes to handle transformaitons// they will need to be running?
-    # rospy.init_node("transformations")
-    # tf2_buffer = tf2_ros.Buffer()
-    # tf2_listener = tf2_ros.TransformListener(tf2_buffer)
-    # #note distances in graspit are in mm, in Gazebo are meters.
+#     #transform robot to world
+#     #recover pose from gazebo of the object usign col/row (in a other software). here receive that pose.
+#     #pose for testing purposes
+#     object_pose=Pose()
+#     object_pose.position.x = 0
+#     object_pose.position.y = 0
+#     object_pose.position.z = 0
+#     object_pose.orientation.x = 0
+#     object_pose.orientation.y = 0
+#     object_pose.orientation.z = 0
+#     object_pose.orientation.w = 1
+
+#     #option to add extra transformaiton in case someting is off
+#     aditional_rotation = np.array([1,0,0,0])
+#     aditional_translation=np.array([0,0,0])
+
+#     #now get robot pose from the transformation matrix
+#     robot_pose=get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose,aditional_rotation, aditional_translation)
+#     print(robot_pose)
+
+
+
 
 
 
