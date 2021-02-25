@@ -156,19 +156,19 @@ def get_posture(robot_joints,time):
 #     world_object_pose=object_pose
 
 #     grasp=compute_grasp(
-#     joints_open_position,open_hand_time,
-#     close_hand_time,
-#     pre_grasp_aproach_direction, pre_grasp_desired_dis, pre_gras_min_dis,
-#     post_grasp_aproach_direction, post_grasp_desired_dis, post_gras_min_dis,
-#     world_file,
-#     package_name,
-#     package_folder,
-#     world_object_pose,
-#     aditional_rotation=None,
-#     aditional_translation=None,
-#     max_contact_force=-1,
-#     allowed_touch_objects=[],
-#     reference_frame="world")
+#     joints_open_position=joints_open_position,
+#     open_hand_time=0.5,
+#     close_hand_time=0.5,
+#     pre_grasp_aproach_direction=[1,0,0],
+#     pre_grasp_desired_dis=10,
+#     pre_gras_min_dis=1,
+#     post_grasp_aproach_direction=[1,0,0],
+#     post_grasp_desired_dis=9,
+#     post_gras_min_dis=0.5,
+#     world_file="mpl_checker_v3.xml",
+#     package_folder='resources',
+#     package_name='mpl_graspit',
+#     world_object_pose=object_pose)
 
 #     print(grasp)
     
