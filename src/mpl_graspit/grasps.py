@@ -8,6 +8,8 @@ from moveit_msgs.msg import  Grasp, GripperTranslation
 from geometry_msgs.msg import Pose
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
+
+
 #define which hrasp which object
 
 
@@ -118,6 +120,9 @@ def get_posture(robot_joints,time):
     posture.points.append(way_point) #we are defining the grasp posture with only one waypoint.
     
     return posture
+
+
+
 
 
 
