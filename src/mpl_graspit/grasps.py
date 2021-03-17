@@ -4,9 +4,9 @@ This file create grasp message given a world file, and the real position of the 
 """
 import utils
 import rospy
-from moveit_msgs.msg import  Grasp, GripperTranslation
-from geometry_msgs.msg import Pose
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from moveit_msgs.msg import  Grasp
+
+
 
 
 
@@ -33,10 +33,10 @@ def compute_grasp(
     --joints_open_position: dictionary of the joints and angle in open position (pre-grasp)
     --open_hand_time: time desired to open hand
     --close_hand_time: time to reach grasp position with the fingers.
-    --pre_grasp_aproach_direction:  (x,y,z) direction end effector will aproach grasp_pose
+    --pre_grasp_aproach_direction:  (x,y,z) direction end effector will aproach grasp_poses in world frame
     --pre_grasp_desired_dis: distance will travel when aproaching 
     --pre_gras_min_dis: the min distance that must be considered feasible before the grasp is even attempted
-    --post_grasp_aproach_direction: (x,y,z) direction end effector will retreat after closing the hand (from grasp_pose)
+    --post_grasp_aproach_direction: (x,y,z) direction end effector will retreat after closing the hand (from grasp_pose). in world frame
     --post_grasp_desired_dis: distance that will retreat
     --post_gras_min_dis: min distance to consider is enough far away?
     --max_contact_force: the maximum contact force to use while grasping (<=0 to disable)
@@ -58,10 +58,10 @@ def compute_grasp(
     #grasp id (optional)
 
     #define pre-grasp joints posture. basically open hand.
-    grasp.pre_grasp_posture=get_posture(joints_open_position,open_hand_time)
+    grasp.pre_grasp_posture=utils.get_posture(joints_open_position,open_hand_time)
 
     #define hand finger posture during grasping
-    grasp.grasp_posture=get_posture(robot_joints,close_hand_time)
+    grasp.grasp_posture=utils.get_posture(robot_joints,close_hand_time)
 
     #define grasp pose: position of the end effector during grasp
     grasp.grasp_pose.header.frame_id=reference_frame #pose in this reference frame
@@ -70,10 +70,10 @@ def compute_grasp(
     #grasp quality (no needed/used. can be obtained from graspit)
 
     #pre_grasp_approach.The approach direction the robot will move when aproaching the object
-    grasp.pre_grasp_approach=get_gripper_translation(pre_grasp_aproach_direction,pre_grasp_desired_dis, pre_gras_min_dis,reference_frame)
+    grasp.pre_grasp_approach=utils.get_gripper_translation(pre_grasp_aproach_direction,pre_grasp_desired_dis, pre_gras_min_dis,reference_frame)
 
     #post_grasp_retreat. The retreat direction to take after a grasp has been completed (object is attached)
-    grasp.post_grasp_retreat=get_gripper_translation(post_grasp_aproach_direction,post_grasp_desired_dis, post_gras_min_dis,reference_frame)
+    grasp.post_grasp_retreat=utils.get_gripper_translation(post_grasp_aproach_direction,post_grasp_desired_dis, post_gras_min_dis,reference_frame)
 
     #max contact force
     grasp.max_contact_force=max_contact_force
@@ -85,41 +85,6 @@ def compute_grasp(
 
 
 
-def get_gripper_translation(direction,desired_dis, min_dis,reference_frame):
-    """
-    Return "pre_grasp_approach"/"post_grasp_retreat"/"post_place_retreat" for the moveit_msgs/Grasp
-    input: direction of translation
-    desired_dis: distance should translate in that direction
-    min_dis: minimum distance to consider before changing grasp posture
-    """    
-    translation=GripperTranslation()
-    translation.direction.header.frame_id=reference_frame #directions defined with respect of this reference frame
-    translation.direction.vector.x=direction[0]
-    translation.direction.vector.y=direction[1]
-    translation.direction.vector.z=direction[2]
-    translation.desired_distance=desired_dis
-    translation.min_distance=min_dis
-    return translation
-
-
-
-
-
-def get_posture(robot_joints,time):
-    """
-    Return "grasp_posture"/"pre_grasp_posture" for the moveit_msgs/Grasp.
-    robot_joints: robot joints during that posture
-    """
-    posture=JointTrajectory()
-    way_point=JointTrajectoryPoint()
-    way_point.time_from_start=rospy.Duration(time)#time for reach position.
-    for joint_name in robot_joints:
-        posture.joint_names.append(joint_name)
-        way_point.positions.append(robot_joints[joint_name])
-
-    posture.points.append(way_point) #we are defining the grasp posture with only one waypoint.
-    
-    return posture
 
 
 

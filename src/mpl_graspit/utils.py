@@ -24,6 +24,11 @@ import rospy
 import tf2_ros
 import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for PoseStamped
 
+from geometry_msgs.msg import Pose
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from moveit_msgs.msg import   GripperTranslation
+
+
 #import custom services
 from mpl_utils.srv import checkIK 
 
@@ -87,17 +92,17 @@ def from_transformation_to_pose(T):
 
 
 
-def transform_pose_between_frames(self,input_pose, from_frame, to_frame):
+def transform_pose_between_frames(input_pose, from_frame, to_frame):
     """
     Transform pose from one frame to another
     """
     #init tf2 to transform between frames
     tf_buffer = tf2_ros.Buffer()
-    listener = tf2_ros.TransformListener(self.tf_buffer)
+    listener = tf2_ros.TransformListener(tf_buffer)
     pose_stamped = tf2_geometry_msgs.PoseStamped()
     pose_stamped.pose = input_pose
     pose_stamped.header.frame_id = from_frame
-    pose_stamped.header.stamp = rospy.Time.now()
+    # pose_stamped.header.stamp = rospy.Time.now()
 
     try:
         # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
@@ -230,6 +235,45 @@ def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditi
     robot_pose=from_transformation_to_pose(T_robot_world)
 
     return robot_pose
+
+
+
+
+def get_gripper_translation(direction,desired_dis, min_dis,reference_frame):
+    """
+    Return "pre_grasp_approach"/"post_grasp_retreat"/"post_place_retreat" for the moveit_msgs/Grasp
+    input: direction of translation
+    desired_dis: distance should translate in that direction
+    min_dis: minimum distance to consider before changing grasp posture
+    """    
+    translation=GripperTranslation()
+    translation.direction.header.frame_id=reference_frame #directions defined with respect of this reference frame
+    translation.direction.vector.x=direction[0]
+    translation.direction.vector.y=direction[1]
+    translation.direction.vector.z=direction[2]
+    translation.desired_distance=desired_dis
+    translation.min_distance=min_dis
+    return translation
+
+
+
+
+
+def get_posture(robot_joints,time):
+    """
+    Return "grasp_posture"/"pre_grasp_posture" for the moveit_msgs/Grasp.
+    robot_joints: robot joints during that posture
+    """
+    posture=JointTrajectory()
+    way_point=JointTrajectoryPoint()
+    way_point.time_from_start=rospy.Duration(time)#time for reach position.
+    for joint_name in robot_joints:
+        posture.joint_names.append(joint_name)
+        way_point.positions.append(robot_joints[joint_name])
+
+    posture.points.append(way_point) #we are defining the grasp posture with only one waypoint.
+    
+    return posture
 
 
 
