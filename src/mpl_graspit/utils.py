@@ -28,12 +28,14 @@ from geometry_msgs.msg import Pose
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from moveit_msgs.msg import   GripperTranslation
 
+import math 
+import numpy as np
 
 #import custom services
 from mpl_utils.srv import checkIK 
 
 
-
+#-----------------TRANSFORMATION MANUALLY COMPUTED------------------------
 
 def get_transformation_matrix(q,t):
     """
@@ -91,6 +93,7 @@ def from_transformation_to_pose(T):
     return pose
 
 
+#-----------------FUNCTIONS THAT USE TF2/ INTERACT WITH EXISTING FRAMES IN GAZEBO------------------------
 
 def transform_pose_between_frames(input_pose, from_frame, to_frame):
     """
@@ -112,7 +115,44 @@ def transform_pose_between_frames(input_pose, from_frame, to_frame):
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         raise
 
+def get_origin_frame_pose(frame_name):
+    """
+    Return the origin of the frame seen from world
+    """
+    pose=Pose() #origin of the frame
+    pose.orientation.x=0
+    pose.orientation.y=0
+    pose.orientation.z=0
+    pose.orientation.w=1
+    pose.position.x=0
+    pose.position.y=0
+    pose.position.z=0
 
+    #seen from world
+    pose_w=transform_pose_between_frames(pose, frame_name, "world")
+    return pose_w
+
+def vectors_angle(v1,v2):
+    """
+    Compute the angle between 2D vectors.
+    """
+
+    
+    v1xv2=np.cross(v1,v2)
+    v1dv2=np.dot(v1,v2)
+
+    angle=math.atan2(np.linalg.norm(v1xv2),v1dv2)
+
+    return angle
+
+
+
+
+
+    
+
+
+#-----------------READ GRASPIT FILES------------------------
 
 def read_world_file(filename,package_name, package_folder=None):
     """
@@ -202,6 +242,9 @@ def read_world_file(filename,package_name, package_folder=None):
     return robot_joints, T_robot_graspit ,T_object_graspit
 
 
+#---------------FUNCTIONS TO COMPUTE GRASP------------------------
+
+
 def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditional_rotation=None, aditional_translation=None):
     """
     Compute pose of the robot
@@ -280,6 +323,7 @@ def get_posture(robot_joints,time):
 
 #main for testing
 # if __name__ == "__main__":
+
 #     filename='worlds/mpl_checker_v3.xml'
 #     package_folder='resources'
 #     package_name='mpl_graspit'

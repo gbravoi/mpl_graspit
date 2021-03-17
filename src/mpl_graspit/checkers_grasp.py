@@ -43,11 +43,14 @@ def compute_checkers_grasp(checker_row,checker_col,
     #find object information
     cell_info=cell_info_client(checker_row,checker_col)
     if not cell_info.available:
-
         #object pose in world frame
         objects_pose_w=cell_info.pose 
         print("object pose")
         print(str(objects_pose_w))
+
+        #compute angle between shoulder and object (this didn't worked)
+        # angle=compute_angle_object_frame("mpl_right_arm__humerus",objects_pose_w)*180/math.pi
+        # print("the angle is "+str(angle))
 
         objects_pose_r=utils.transform_pose_between_frames(objects_pose_w, "world", robot_base_frame)#object pose in robot frame
 
@@ -62,7 +65,8 @@ def compute_checkers_grasp(checker_row,checker_col,
         step=1
         robot_pose=None
 
-        for deg in range(0,360,step):#check all circle. Rotation in Z axis
+        #start in 22 for debuging purposes
+        for deg in range(22,90,step):#check all circle. Rotation in Z axis
             aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,0,math.sin(math.radians(deg/2))])
             robot_pose_r=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_r,aditional_rotation, aditional_translation)
             #tranform pose to robot frame
@@ -102,8 +106,8 @@ def compute_checkers_grasp(checker_row,checker_col,
 
 
 
-        rospy.loginfo("Pose CAN NOT  be achived")
-        return None
+        # rospy.loginfo("Pose CAN NOT  be achived")
+        # return None
         
             
 
@@ -129,4 +133,24 @@ def compute_checkers_grasp(checker_row,checker_col,
         rospy.loginfo("Cell "+cell_info.cell_name+" doesn't have a checker piece")
 
 
-    
+
+def compute_angle_object_frame(frame_name,object_pose):
+    """
+    Compute angle in plane x,y between the frame origin and the object position
+    """
+    frame_origin=utils.get_origin_frame_pose(frame_name)
+    print("humerus_pose")
+    print(str(frame_origin))
+
+    #compute angle vectors from humerus to object with respect of the y-plane (edge of table)
+    x1=frame_origin.position.x
+    y1=frame_origin.position.y
+    x2=object_pose.position.x
+    y2=object_pose.position.y    
+
+    v1=np.array([x1-x2,y1-y2])
+    v2=np.array([0,y1-y2])
+
+
+    angle=utils.vectors_angle(v2,v1)
+    return angle
