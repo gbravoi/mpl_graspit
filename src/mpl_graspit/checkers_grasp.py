@@ -9,14 +9,13 @@ import utils
 import math
 import numpy as np
 
+from mpl_utils.ik_client import IK_client
+
 def compute_checkers_grasp(checker_row,checker_col,
                         joints_open_position,open_hand_time,
                         close_hand_time,
                         pre_grasp_aproach_direction, pre_grasp_desired_dis, pre_gras_min_dis,
                         post_grasp_aproach_direction, post_grasp_desired_dis, post_gras_min_dis,
-                        world_file,
-                        package_name,
-                        package_folder,
                         aditional_rotation,
                         aditional_translation,
                         max_contact_force,
@@ -34,7 +33,10 @@ def compute_checkers_grasp(checker_row,checker_col,
         except rospy.ServiceException as e:
             rospy.loginfo("Service call checker info failed: %s"%e)
     
-
+    #define some parameters
+    world_file="mpl_checker_v3.xml"
+    package_folder='resources'
+    package_name='mpl_graspit'
     
     #find object information
     cell_info=cell_info_client(checker_row,checker_col)
@@ -42,6 +44,9 @@ def compute_checkers_grasp(checker_row,checker_col,
         # print("Cell "+ cell_info.cell_name+ " Pose:")
         # print(cell_info.pose)
         world_object_pose=cell_info.pose
+        print("object pose")
+        print(str(world_object_pose))
+
 
         
         #read world file
@@ -54,10 +59,10 @@ def compute_checkers_grasp(checker_row,checker_col,
         step=5
         robot_pose=None
         for deg in range(0,360,step):#check all circle. Rotation in Z axis
-            aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,math.sin(math.radians(deg/2)),0])
+            aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,0,math.sin(math.radians(deg/2))])
             robot_pose=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, world_object_pose,aditional_rotation, aditional_translation)
             #check is pose is reachabe using inverse kinematics (service must be available)
-            is_valid=(utils.IK_client(robot_pose)).is_solution
+            is_valid=(IK_client(robot_pose)).is_solution
             if is_valid:
                 rospy.loginfo("Pose can be achived: %i" %deg)
                 return robot_pose

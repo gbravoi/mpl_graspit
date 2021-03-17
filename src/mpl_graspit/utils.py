@@ -47,6 +47,7 @@ def get_transformation_matrix(q,t):
 def get_transformation_matrix_from_pose(pose):
     """
     transformaiton matrix, where the input is a pose
+    q=[w,x,y,z]
     """
     q=np.array([pose.orientation.w,pose.orientation.x,pose.orientation.y,pose.orientation.z])
     t=np.array([pose.position.x,pose.position.y,pose.position.z])
@@ -231,19 +232,7 @@ def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditi
     return robot_pose
 
 
-def IK_client(pose):
-    """
-    Client ot service that returns if there is a inverse kinematic solution to the desired pose
-    This service has a launch file in mpl_utils
-    """
-    # rospy.loginfo("Waiting for service mpl_utils/ik_service/")
-    rospy.wait_for_service('mpl_utils/ik_service/')
-    try:
-        service = rospy.ServiceProxy('mpl_utils/ik_service/', checkIK)
-        resp = service(pose)
-        return resp
-    except rospy.ServiceException as e:
-        rospy.loginfo("Service call failed: %s"%e)
+
 
 #main for testing
 # if __name__ == "__main__":
