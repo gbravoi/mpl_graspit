@@ -20,6 +20,14 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 from geometry_msgs.msg import Pose
 
+import rospy
+import tf2_ros
+import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for PoseStamped
+
+#import custom services
+from mpl_utils.srv import checkIK 
+
+
 
 
 def get_transformation_matrix(q,t):
@@ -77,6 +85,26 @@ def from_transformation_to_pose(T):
     return pose
 
 
+
+def transform_pose_between_frames(self,input_pose, from_frame, to_frame):
+    """
+    Transform pose from one frame to another
+    """
+    #init tf2 to transform between frames
+    tf_buffer = tf2_ros.Buffer()
+    listener = tf2_ros.TransformListener(self.tf_buffer)
+    pose_stamped = tf2_geometry_msgs.PoseStamped()
+    pose_stamped.pose = input_pose
+    pose_stamped.header.frame_id = from_frame
+    pose_stamped.header.stamp = rospy.Time.now()
+
+    try:
+        # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
+        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1))
+        return output_pose_stamped.pose
+
+    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        raise
 
 
 
@@ -203,7 +231,19 @@ def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditi
     return robot_pose
 
 
-
+def IK_client(pose):
+    """
+    Client ot service that returns if there is a inverse kinematic solution to the desired pose
+    This service has a launch file in mpl_utils
+    """
+    # rospy.loginfo("Waiting for service mpl_utils/ik_service/")
+    rospy.wait_for_service('mpl_utils/ik_service/')
+    try:
+        service = rospy.ServiceProxy('mpl_utils/ik_service/', checkIK)
+        resp = service(pose)
+        return resp
+    except rospy.ServiceException as e:
+        rospy.loginfo("Service call failed: %s"%e)
 
 #main for testing
 # if __name__ == "__main__":
