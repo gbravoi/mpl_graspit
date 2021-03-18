@@ -48,16 +48,16 @@ def compute_checkers_grasp(checker_row,checker_col,
         print("object pose")
         print(str(objects_pose_w))
 
-        #compute angle between shoulder and object (this didn't worked)
-        # angle=compute_angle_object_frame("mpl_right_arm__humerus",objects_pose_w)*180/math.pi
-        # print("the angle is "+str(angle))
+        #compute angle between shoulder and object (set a starting angle to start looking for for the grip of the checker. Later check. there is an angle that alwyas work?)
+        angle=compute_angle_object_frame("mpl_right_arm__humerus",objects_pose_w)*180/math.pi
+        print("the angle is "+str(angle))
 
         objects_pose_r=utils.transform_pose_between_frames(objects_pose_w, "world", robot_base_frame)#object pose in robot frame
 
 
         #read world file
         filename="worlds/"+world_file
-        robot_joints, T_robot_graspit ,T_object_graspit= utils.read_world_file(filename,package_name, package_folder)
+        robot_joints_grasp, T_robot_graspit ,T_object_graspit= utils.read_world_file(filename,package_name, package_folder)
 
         #check robot pose
         aditional_translation=None
@@ -66,7 +66,8 @@ def compute_checkers_grasp(checker_row,checker_col,
         robot_pose=None
 
         #start in 22 for debuging purposes
-        for deg in range(22,90,step):#check all circle. Rotation in Z axis
+        # for deg in range(angle,90,step):#check all circle. Rotation in Z axis
+        for deg in range(22,90,step):
             aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,0,math.sin(math.radians(deg/2))])
             robot_pose_r=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_r,aditional_rotation, aditional_translation)
             #tranform pose to robot frame
@@ -82,7 +83,7 @@ def compute_checkers_grasp(checker_row,checker_col,
                 grasp.pre_grasp_posture=utils.get_posture(joints_open_position,open_hand_time)
 
                 #define hand finger posture during grasping
-                grasp.grasp_posture=utils.get_posture(robot_joints,close_hand_time)
+                grasp.grasp_posture=utils.get_posture(robot_joints_grasp,close_hand_time)
                 
                 #define grasp pose: position of the end effector during grasp
                 grasp.grasp_pose.header.frame_id=robot_base_frame #pose in this reference frame
@@ -149,8 +150,8 @@ def compute_angle_object_frame(frame_name,object_pose):
     y2=object_pose.position.y    
 
     v1=np.array([x1-x2,y1-y2])
-    v2=np.array([0,y1-y2])
+    v2=np.array([x1-x2,0])
 
 
-    angle=utils.vectors_angle(v2,v1)
+    angle=math.floor(utils.vectors_angle(v2,v1))
     return angle

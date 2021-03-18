@@ -209,8 +209,8 @@ def read_world_file(filename,package_name, package_folder=None):
         robot_joints_names=get_joints_names(robot_path)
         joints={}
         #create a disctionary
-        for i in range(len(robot_joints_names)):
-            joints[robot_joints_names[i]]=robot_joints_positions[i]
+        zipbObj = zip(robot_joints_names, robot_joints_positions)
+        joints=dict(zipbObj)
         return joints
 
     def get_absolute_path(package_name,package_folder,filename):
