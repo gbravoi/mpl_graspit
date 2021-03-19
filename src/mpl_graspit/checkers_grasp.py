@@ -49,7 +49,7 @@ def compute_checkers_grasp(checker_row,checker_col,
         print(str(objects_pose_w))
 
         #compute angle between shoulder and object (set a starting angle to start looking for for the grip of the checker. Later check. there is an angle that alwyas work?)
-        angle=compute_angle_object_frame("mpl_right_arm__humerus",objects_pose_w)*180/math.pi
+        angle=compute_angle_object_frame("mpl_right_arm__humerus",objects_pose_w)
         print("the angle is "+str(angle))
 
         objects_pose_r=utils.transform_pose_between_frames(objects_pose_w, "world", robot_base_frame)#object pose in robot frame
@@ -90,10 +90,10 @@ def compute_checkers_grasp(checker_row,checker_col,
                 grasp.grasp_pose.pose=robot_pose_r
 
                 #pre_grasp_approach.The approach direction the robot will move when aproaching the object
-                grasp.pre_grasp_approach=utils.get_gripper_translation(pre_grasp_aproach_direction,pre_grasp_desired_dis, pre_gras_min_dis,"world")
+                grasp.pre_grasp_approach=utils.get_gripper_translation(pre_grasp_aproach_direction,pre_grasp_desired_dis, pre_gras_min_dis,"base_link")
 
                 #post_grasp_retreat. The retreat direction to take after a grasp has been completed (object is attached)
-                grasp.post_grasp_retreat=utils.get_gripper_translation(post_grasp_aproach_direction,post_grasp_desired_dis, post_gras_min_dis,"world")
+                grasp.post_grasp_retreat=utils.get_gripper_translation(post_grasp_aproach_direction,post_grasp_desired_dis, post_gras_min_dis,"base_link")
 
                 #max contact force
                 grasp.max_contact_force=max_contact_force
@@ -153,5 +153,5 @@ def compute_angle_object_frame(frame_name,object_pose):
     v2=np.array([x1-x2,0])
 
 
-    angle=math.floor(utils.vectors_angle(v2,v1))
+    angle=math.floor(utils.vectors_angle(v2,v1)*180/math.pi)
     return angle
