@@ -3,5 +3,5 @@
 	<material>rubber</material>
 	<mass>21</mass>
 	<cog>0 0 0</cog>
-	<geometryFile type="Inventor">checker.iv</geometryFile>
+	<geometryFile type="Inventor">checker_small.iv</geometryFile>
 </root>

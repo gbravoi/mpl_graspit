@@ -16,5 +16,5 @@ Separator { # Body
 		diffuseColor	0.4 0.4 0.8
 	  }
 
-	  Cylinder { radius 20 height 25 }
+	  Cylinder { radius 18 height 25 }
 }
