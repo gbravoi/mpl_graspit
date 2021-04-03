@@ -34,7 +34,7 @@ def compute_checkers_grasp(checker_row,checker_col,
             rospy.loginfo("Service call checker info failed: %s"%e)
     
     #define some parameters
-    grasp_file="mpl_checker_v3.xml" #grasping position
+    grasp_file="mpl_checker_v4.xml" #grasping position
     pregrasp_file="mpl_checker_pregrasp.xml"
     package_folder='resources'
     package_name='mpl_graspit'
@@ -46,7 +46,7 @@ def compute_checkers_grasp(checker_row,checker_col,
     cell_info=cell_info_client(checker_row,checker_col)
     if not cell_info.available:
         #object pose in world frame
-        objects_pose_w=cell_info.pose 
+        objects_pose_w=cell_info.pose_checker
         print("object pose")
         print(str(objects_pose_w))
 
@@ -54,10 +54,10 @@ def compute_checkers_grasp(checker_row,checker_col,
         angle=int(compute_angle_object_frame("mpl_right_arm__humerus",objects_pose_w))
         print("the angle is "+str(angle))
 
-        if robot_base_frame !="world":
-            objects_pose_r=utils.transform_pose_between_frames(objects_pose_w, "world", robot_base_frame)#object pose in robot frame
-        else:
-            objects_pose_r=objects_pose_w
+        # if robot_base_frame !="world":
+        #     objects_pose_r=utils.transform_pose_between_frames(objects_pose_w, "world", robot_base_frame)#object pose in robot frame
+        # else:
+        #     objects_pose_r=objects_pose_w
 
 
         #read world file grasp
@@ -76,9 +76,14 @@ def compute_checkers_grasp(checker_row,checker_col,
 
         #start in 22 for debuging purposes
         # for deg in range(angle,90,step):#check all circle. Rotation in Z axis
-        for deg in range(22,90,step):
+        for deg in range(22,360,step):
             aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,0,math.sin(math.radians(deg/2))])
-            robot_pose_r=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_r,aditional_rotation, aditional_translation)
+            robot_pose_w=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_w,aditional_rotation, aditional_translation)
+            if robot_base_frame !="world":
+                robot_pose_r=utils.transform_pose_between_frames(robot_pose_w, "world", robot_base_frame)#object pose in robot frame
+            else:
+                robot_pose_r=robot_pose_w
+            # robot_pose_r=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_r,aditional_rotation, aditional_translation)
             #tranform pose to robot frame
             
 
