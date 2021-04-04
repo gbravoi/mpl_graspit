@@ -10,7 +10,7 @@ import utils
 import math
 import numpy as np
 
-from mpl_utils.ik_client import IK_client
+from mpl_utils.useful_clients import IK_client, gazebo_pose_client
 from moveit_msgs.msg import  Grasp, GripperTranslation
 
 def compute_checkers_grasp(checker_row,checker_col,
@@ -69,6 +69,8 @@ def compute_checkers_grasp(checker_row,checker_col,
         robot_joints_pregrasp,_,_= utils.read_world_file(filename_pre,package_name, package_folder)
 
 
+
+
         #check robot pose
         aditional_translation=None
         #find hand rotation that have inverse kinematic solution
@@ -79,8 +81,9 @@ def compute_checkers_grasp(checker_row,checker_col,
         for deg in range(22,360,step):
             aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,0,math.sin(math.radians(deg/2))])
             robot_pose_w=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_w,aditional_rotation, aditional_translation)
+            
             if robot_base_frame !="world":
-                robot_pose_r=utils.transform_pose_between_frames(robot_pose_w, "world", robot_base_frame)#object pose in robot frame
+                robot_pose_r=utils.transform_pose_between_frames(robot_pose_w, "world", robot_base_frame)#object pose in robot frame        
             else:
                 robot_pose_r=robot_pose_w
             # robot_pose_r=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_r,aditional_rotation, aditional_translation)
