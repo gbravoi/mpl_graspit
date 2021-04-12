@@ -58,7 +58,7 @@ ln -s <path-to mpl_graspit>/resources/worlds/mpl_right_arm_world.xml
 To know more about objects files check [Graspit manual](https://graspit-simulator.github.io/build/html/data_files_bodies.html)
 [Inventor basic shapes](http://web.mit.edu/ivlib/www/iv/shapes.html)
 
-**-Option 2: use resoruces folder inside this package**
+**-Option 2: use resources folder inside this package**
 Add it to your bashrc  file:
 ```
 echo "export GRASPIT=<path-to mpl_graspit>/resources" >> ~/.bashrc    
@@ -109,9 +109,11 @@ You can create your set of contacts using the *Virtual Grasp* tool of graspit.
 
 3. You can evaluate the grasp using Grasp>Quality Measure. Select quality, Add, Ok. For example epsilon =-1 is invalid grasp. The bigger the number the better (note epsilon<1).
 
-4. Save the file (.world) In there you can find informaton like the joint position of the hand during grasping, the absolute position and orientation of the hand and the objects in  Graspit coordinates. You can use the joint position for grasp the object. To use the positions of the hand and the object you will need to transform to the origin of Gazebo/Rviz
+4. Save the file (.world) In there you can find informaton like the joint position of the hand during grasping, the absolute position and orientation of the hand and the objects in  Graspit coordinates. You can use the joint position for grasp the object. 
 
-## Search for the desired grasp using service written by Jennifer Buehler
+5. To use the positions of the hand and the object you will need to transform to the origin of Gazebo/Rviz. You can use as example of this step `$checkers_grasp.py` where the moveit grasp message is computed knowing the position on Gazebo of the checker.
+
+## Search for the desired grasp using service written by Jennifer Buehler (not used)
 This code implement a service that uses Graspit without the grapical interface. You will need to load the robot and object model, call the EigenGrasp planner, and the you will receive a list of possible grasps (*moveit_msgs/GraspPlanning*) and get the world files of the hand grasping the object.
 
 The wiki of this code can be found [here](https://github.com/JenniferBuehler/graspit-pkgs/wiki/grasp_planning_graspit_ros)
