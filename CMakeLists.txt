@@ -9,7 +9,6 @@ project(mpl_graspit)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  gazebo_checkers
 )
 
 
