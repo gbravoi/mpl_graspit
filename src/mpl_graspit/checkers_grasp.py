@@ -20,7 +20,9 @@ def compute_checkers_grasp(checker_row,checker_col,
                         post_grasp_aproach_direction, post_grasp_desired_dis, post_gras_min_dis,
                         max_contact_force,
                         allowed_touch_objects,
-                        robot_base_frame):
+                        robot_base_frame,
+                        grasp_file,
+                        pregrasp_file):
     def cell_info_client(from_row,from_col):
         """
         function to get checker information from gazebo
@@ -34,10 +36,10 @@ def compute_checkers_grasp(checker_row,checker_col,
             rospy.loginfo("Service call checker info failed: %s"%e)
     
     #define some parameters
-    grasp_file="mpl_checker_v4.xml" #grasping position
-    pregrasp_file="mpl_checker_pregrasp.xml"
+    # grasp_file="mpl_checker_v4.xml" #grasping position
+    # pregrasp_file="mpl_checker_pregrasp.xml"
     package_folder='resources'
-    package_name='mpl_graspit'
+    package_name='mpl_graspit' 
 
     #create moveit Grasp
     grasp= Grasp()
