@@ -81,6 +81,7 @@ def compute_checkers_grasp(checker_row,checker_col,
 
         # for deg in range(angle,90,step):#check all circle. Rotation in Z axis
         for deg in range(angle,360,step):
+            rospy.loginfo("IK solver trying pose: %i deg rotation" %deg)
             aditional_rotation=np.array([math.cos(math.radians(deg/2)),0,0,math.sin(math.radians(deg/2))])
             robot_pose_w=utils.get_robot_pose(T_robot_graspit ,T_object_graspit, objects_pose_w,aditional_rotation, aditional_translation)
             

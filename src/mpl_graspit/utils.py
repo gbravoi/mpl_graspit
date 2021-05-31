@@ -253,10 +253,10 @@ def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditi
     """
     #use pose to get transformation from object to world
     T_object_world=get_transformation_matrix_from_pose(object_pose_in_world)
-    print("T_object_world")
-    print(T_object_world)
-    print("T_object_graspit")
-    print(T_object_graspit)
+    # print("T_object_world")
+    # print(T_object_world)
+    # print("T_object_graspit")
+    # print(T_object_graspit)
     
     aditional_transformation=None
     #option to add extra transformaiton in case someting is off
@@ -271,8 +271,8 @@ def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditi
     #compute inverse tranformation object_graspit
     T_graspit_object=transformation_inverse(T_object_graspit)
     
-    print("aditional_transformation")
-    print(aditional_transformation)
+    # print("aditional_transformation")
+    # print(aditional_transformation)
 
     #compute transformation robot_world
     T_robot_world=None
@@ -280,8 +280,8 @@ def get_robot_pose(T_robot_graspit ,T_object_graspit, object_pose_in_world,aditi
         T_robot_world=np.matmul(T_object_world,np.matmul(T_graspit_object,T_robot_graspit))
     else:
         T_graspit_world=np.matmul(T_object_world,np.matmul(T_graspit_object,aditional_transformation))
-        print("T_graspit_world")
-        print(T_graspit_world)
+        # print("T_graspit_world")
+        # print(T_graspit_world)
         T_robot_world=np.matmul(T_graspit_world,T_robot_graspit)
 
     #now get robot pose from the transformation matrix
